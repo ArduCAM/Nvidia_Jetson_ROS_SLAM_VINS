@@ -7,7 +7,11 @@
  * you may not use this file except in compliance with the License.
  *******************************************************/
 
+/////// modified
+/////// provide arducam_pose for depth estimation [odom to  pose] //////
+
 #include "visualization.h"
+#include <geometry_msgs/PoseStamped.h>     ////////
 
 using namespace ros;
 using namespace Eigen;
@@ -16,6 +20,7 @@ ros::Publisher pub_path;
 ros::Publisher pub_point_cloud, pub_margin_cloud;
 ros::Publisher pub_key_poses;
 ros::Publisher pub_camera_pose;
+ros::Publisher pub_arducam_pose;  //////////
 ros::Publisher pub_camera_pose_right;
 ros::Publisher pub_rectify_pose_left;
 ros::Publisher pub_rectify_pose_right;
@@ -273,7 +278,12 @@ void pubCameraPose(const Estimator &estimator, const std_msgs::Header &header)
         }
 
         pub_camera_pose.publish(odometry);
-
+        
+        geometry_msgs::PoseStamped new_pose;      ////////
+        new_pose.header.stamp =  odometry.header.stamp;
+        new_pose.pose =  odometry.pose.pose;
+        pub_arducam_pose.publish(new_pose);
+        
         cameraposevisual.reset();
         cameraposevisual.add_pose(P, R);
         if(STEREO)
