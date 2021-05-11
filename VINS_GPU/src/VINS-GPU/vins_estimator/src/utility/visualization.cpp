@@ -46,6 +46,8 @@ void registerPub(ros::NodeHandle &n)
     pub_margin_cloud = n.advertise<sensor_msgs::PointCloud>("margin_cloud", 1000);
     pub_key_poses = n.advertise<visualization_msgs::Marker>("key_poses", 1000);
     pub_camera_pose = n.advertise<nav_msgs::Odometry>("camera_pose", 1000);
+    pub_arducam_pose = n.advertise<geometry_msgs::PoseStamped>("arducam_pose", 1000);  ///////
+    
     pub_camera_pose_right = n.advertise<nav_msgs::Odometry>("camera_pose_right", 1000);
     pub_rectify_pose_left = n.advertise<geometry_msgs::PoseStamped>("rectify_pose_left", 1000);
     pub_rectify_pose_right = n.advertise<geometry_msgs::PoseStamped>("rectify_pose_right", 1000);
@@ -279,7 +281,7 @@ void pubCameraPose(const Estimator &estimator, const std_msgs::Header &header)
 
         pub_camera_pose.publish(odometry);
         
-        geometry_msgs::PoseStamped new_pose;      ////////
+        geometry_msgs::PoseStamped new_pose;      ///////////////////////////////////
         new_pose.header.stamp =  odometry.header.stamp;
         new_pose.pose =  odometry.pose.pose;
         pub_arducam_pose.publish(new_pose);
