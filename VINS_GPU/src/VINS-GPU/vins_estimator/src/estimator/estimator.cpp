@@ -7,6 +7,8 @@
  * you may not use this file except in compliance with the License.
  *******************************************************/
 
+// maker: //**
+
 #include "estimator.h"
 #include "../utility/visualization.h"
 
@@ -101,8 +103,8 @@ void Estimator::inputIMU(double t, const Vector3d &linearAcceleration, const Vec
     mBuf.unlock();
 
     fastPredictIMU(t, linearAcceleration, angularVelocity);
-    if (solver_flag == NON_LINEAR)
-        pubLatestOdometry(latest_P, latest_Q, latest_V, t);
+    //if (solver_flag == NON_LINEAR)
+        //pubLatestOdometry(latest_P, latest_Q, latest_V, t);     //**
 }
 
 void Estimator::inputFeature(double t, const map<int, vector<pair<int, Eigen::Matrix<double, 7, 1>>>> &featureFrame)
@@ -218,10 +220,10 @@ void Estimator::processMeasurements()
             header.stamp = ros::Time(feature.first);
 
             pubOdometry(*this, header);
-            pubKeyPoses(*this, header);
+            //pubKeyPoses(*this, header);            //**
             pubCameraPose(*this, header);
             pubPointCloud(*this, header);
-            pubKeyframe(*this);
+            //pubKeyframe(*this);                    //**
             pubTF(*this, header);
             printf("process measurement time: %f\n", t_process.toc());
         }
