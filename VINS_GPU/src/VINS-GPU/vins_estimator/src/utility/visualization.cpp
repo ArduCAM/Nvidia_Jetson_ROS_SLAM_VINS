@@ -7,29 +7,36 @@
  * you may not use this file except in compliance with the License.
  *******************************************************/
 
-/////// modified
-/////// provide arducam_pose for depth estimation [odom to  pose] //////
+////////////////////////////
+// mark://**
+// provide arducam_pose for depth estimation 
+// modified pub_xx for simpfy the system
+////////////////////////////
 
 #include "visualization.h"
-#include <geometry_msgs/PoseStamped.h>     ////////
+#include <geometry_msgs/PoseStamped.h>  //**
+
 
 using namespace ros;
 using namespace Eigen;
-ros::Publisher pub_odometry, pub_latest_odometry;
+
+
+//**
+//ros::Publisher pub_odometry, pub_latest_odometry;   
 ros::Publisher pub_path;
 ros::Publisher pub_point_cloud, pub_margin_cloud;
-ros::Publisher pub_key_poses;
-ros::Publisher pub_camera_pose;
-ros::Publisher pub_arducam_pose;  //////////
-ros::Publisher pub_camera_pose_right;
-ros::Publisher pub_rectify_pose_left;
-ros::Publisher pub_rectify_pose_right;
+//ros::Publisher pub_key_poses;                       
+//ros::Publisher pub_camera_pose;                     
+ros::Publisher pub_arducam_pose; 
+//ros::Publisher pub_camera_pose_right;
+//ros::Publisher pub_rectify_pose_left;
+//ros::Publisher pub_rectify_pose_right;
 ros::Publisher pub_camera_pose_visual;
 nav_msgs::Path path;
-
-ros::Publisher pub_keyframe_pose;
-ros::Publisher pub_keyframe_point;
+//ros::Publisher pub_keyframe_pose;
+//ros::Publisher pub_keyframe_point;
 ros::Publisher pub_extrinsic;
+//**
 
 CameraPoseVisualization cameraposevisual(1, 0, 0, 1);
 static double sum_of_path = 0;
@@ -38,27 +45,36 @@ static Vector3d last_path(0.0, 0.0, 0.0);
 size_t pub_counter = 0;
 
 void registerPub(ros::NodeHandle &n)
-{
-    pub_latest_odometry = n.advertise<nav_msgs::Odometry>("imu_propagate", 1000);
+{   
+    
+    
+    //**
+    //pub_latest_odometry = n.advertise<nav_msgs::Odometry>("imu_propagate", 1000);
     pub_path = n.advertise<nav_msgs::Path>("path", 1000);
-    pub_odometry = n.advertise<nav_msgs::Odometry>("odometry", 1000);
+    //pub_odometry = n.advertise<nav_msgs::Odometry>("odometry", 1000);
     pub_point_cloud = n.advertise<sensor_msgs::PointCloud>("point_cloud", 1000);
     pub_margin_cloud = n.advertise<sensor_msgs::PointCloud>("margin_cloud", 1000);
-    pub_key_poses = n.advertise<visualization_msgs::Marker>("key_poses", 1000);
-    pub_camera_pose = n.advertise<nav_msgs::Odometry>("camera_pose", 1000);
-    pub_arducam_pose = n.advertise<geometry_msgs::PoseStamped>("arducam_pose", 1000);  ///////
-    
-    pub_camera_pose_right = n.advertise<nav_msgs::Odometry>("camera_pose_right", 1000);
-    pub_rectify_pose_left = n.advertise<geometry_msgs::PoseStamped>("rectify_pose_left", 1000);
-    pub_rectify_pose_right = n.advertise<geometry_msgs::PoseStamped>("rectify_pose_right", 1000);
-    pub_camera_pose_visual = n.advertise<visualization_msgs::MarkerArray>("camera_pose_visual", 1000);
-    pub_keyframe_pose = n.advertise<nav_msgs::Odometry>("keyframe_pose", 1000);
-    pub_keyframe_point = n.advertise<sensor_msgs::PointCloud>("keyframe_point", 1000);
-    pub_extrinsic = n.advertise<nav_msgs::Odometry>("extrinsic", 1000);
+    //pub_key_poses = n.advertise<visualization_msgs::Marker>("key_poses", 1000);
+    //pub_camera_pose = n.advertise<nav_msgs::Odometry>("camera_pose", 1000);
+    pub_arducam_pose = n.advertise<geometry_msgs::PoseStamped>("arducam_pose", 1000);///////
 
+    //pub_camera_pose_right = n.advertise<nav_msgs::Odometry>("camera_pose_right", 1000);
+    //pub_rectify_pose_left = n.advertise<geometry_msgs::PoseStamped>("rectify_pose_left", 1000);
+    //pub_rectify_pose_right = n.advertise<geometry_msgs::PoseStamped>("rectify_pose_right", 1000);
+    pub_camera_pose_visual = n.advertise<visualization_msgs::MarkerArray>("camera_pose_visual", 1000);
+    //pub_keyframe_pose = n.advertise<nav_msgs::Odometry>("keyframe_pose", 1000);
+    //pub_keyframe_point = n.advertise<sensor_msgs::PointCloud>("keyframe_point", 1000);
+    pub_extrinsic = n.advertise<nav_msgs::Odometry>("extrinsic", 1000);
+    //**
+    
+    
+    
     cameraposevisual.setScale(0.1);
     cameraposevisual.setLineWidth(0.01);
 }
+
+
+
 
 void pubLatestOdometry(const Eigen::Vector3d &P, const Eigen::Quaterniond &Q, const Eigen::Vector3d &V, double t)
 {
@@ -75,7 +91,7 @@ void pubLatestOdometry(const Eigen::Vector3d &P, const Eigen::Quaterniond &Q, co
     odometry.twist.twist.linear.x = V.x();
     odometry.twist.twist.linear.y = V.y();
     odometry.twist.twist.linear.z = V.z();
-    pub_latest_odometry.publish(odometry);
+    //pub_latest_odometry.publish(odometry);    //**
 }
 
 void printStatistics(const Estimator &estimator, double t)
@@ -141,12 +157,13 @@ void pubOdometry(const Estimator &estimator, const std_msgs::Header &header)
         odometry.twist.twist.linear.x = estimator.Vs[WINDOW_SIZE].x();
         odometry.twist.twist.linear.y = estimator.Vs[WINDOW_SIZE].y();
         odometry.twist.twist.linear.z = estimator.Vs[WINDOW_SIZE].z();
-        pub_odometry.publish(odometry);
+        //pub_odometry.publish(odometry);   //**
 
         geometry_msgs::PoseStamped pose_stamped;
         pose_stamped.header = header;
         pose_stamped.header.frame_id = "world";
         pose_stamped.pose = odometry.pose.pose;
+        
         path.header = header;
         path.header.frame_id = "world";
         path.poses.push_back(pose_stamped);
@@ -206,7 +223,7 @@ void pubKeyPoses(const Estimator &estimator, const std_msgs::Header &header)
         pose_marker.z = correct_pose.z();
         key_poses.points.push_back(pose_marker);
     }
-    pub_key_poses.publish(key_poses);
+    //pub_key_poses.publish(key_poses);   //**
 }
 
 void pubCameraPose(const Estimator &estimator, const std_msgs::Header &header)
@@ -229,7 +246,7 @@ void pubCameraPose(const Estimator &estimator, const std_msgs::Header &header)
         odometry.pose.pose.orientation.y = R.y();
         odometry.pose.pose.orientation.z = R.z();
         odometry.pose.pose.orientation.w = R.w();
-
+/*      //**
         if(STEREO)
         {
             Vector3d P_r = estimator.Ps[i] + estimator.Rs[i] * estimator.tic[1];
@@ -245,7 +262,7 @@ void pubCameraPose(const Estimator &estimator, const std_msgs::Header &header)
             odometry_r.pose.pose.orientation.y = R_r.y();
             odometry_r.pose.pose.orientation.z = R_r.z();
             odometry_r.pose.pose.orientation.w = R_r.w();
-            pub_camera_pose_right.publish(odometry_r);
+            //pub_camera_pose_right.publish(odometry_r);
             if(PUB_RECTIFY)
             {
                 Vector3d R_P_l = P;
@@ -273,19 +290,24 @@ void pubCameraPose(const Estimator &estimator, const std_msgs::Header &header)
                 R_pose_r.pose.orientation.z = R_R_r.z();
                 R_pose_r.pose.orientation.w = R_R_r.w();
 
-                pub_rectify_pose_left.publish(R_pose_l);
-                pub_rectify_pose_right.publish(R_pose_r);
+                //pub_rectify_pose_left.publish(R_pose_l);
+                //pub_rectify_pose_right.publish(R_pose_r);
 
             }
         }
 
-        pub_camera_pose.publish(odometry);
-        
-        geometry_msgs::PoseStamped new_pose;      ///////////////////////////////////
-        new_pose.header.stamp =  odometry.header.stamp;
-        new_pose.pose =  odometry.pose.pose;
-        pub_arducam_pose.publish(new_pose);
-        
+        //pub_camera_pose.publish(odometry);
+
+*/
+       
+       //**
+       geometry_msgs::PoseStamped new_pose;     
+       new_pose.header.stamp =  odometry.header.stamp;
+       new_pose.pose =  odometry.pose.pose;
+       pub_arducam_pose.publish(new_pose);
+       //**
+
+
         cameraposevisual.reset();
         cameraposevisual.add_pose(P, R);
         if(STEREO)
@@ -430,7 +452,7 @@ void pubKeyframe(const Estimator &estimator)
         odometry.pose.pose.orientation.w = R.w();
         //printf("time: %f t: %f %f %f r: %f %f %f %f\n", odometry.header.stamp.toSec(), P.x(), P.y(), P.z(), R.w(), R.x(), R.y(), R.z());
 
-        pub_keyframe_pose.publish(odometry);
+        //pub_keyframe_pose.publish(odometry);    //**
 
 
         sensor_msgs::PointCloud point_cloud;
@@ -463,6 +485,6 @@ void pubKeyframe(const Estimator &estimator)
             }
 
         }
-        pub_keyframe_point.publish(point_cloud);
+        //pub_keyframe_point.publish(point_cloud);    //**
     }
 }
