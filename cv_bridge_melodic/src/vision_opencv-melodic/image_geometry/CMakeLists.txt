@@ -4,10 +4,10 @@ project(image_geometry)
 find_package(catkin REQUIRED sensor_msgs)
 
 ####################################3
-include(/home/wong/opencv-3.4.14/build/OpenCVConfig.cmake)
+include(~/opencv-3.4.14/build/OpenCVConfig.cmake)
 set(OpenCV_FOUND 1)
 include_directories( ${OpenCV_INCLUDE_DIRS})
-set(OpenCV_DIR /home/wong/opencv-3.4.14/build)
+set(OpenCV_DIR ~/opencv-3.4.14/build)
 find_package(OpenCV REQUIRED)
 
 catkin_package(CATKIN_DEPENDS sensor_msgs

@@ -8,7 +8,7 @@ num_of_cam: 2
 imu_topic: ""
 image0_topic: "/arducam/left/image_raw"
 image1_topic: "/arducam/right/image_raw"
-output_path: "/home/wong/ROS_WORKSPACE/VINS_GPU_opencv3.4.14"
+output_path: "/home/wong/ROS_WORKSPACE"
 
 cam0_calib: "cam0_mei.yaml"
 cam1_calib: "cam1_mei.yaml"
