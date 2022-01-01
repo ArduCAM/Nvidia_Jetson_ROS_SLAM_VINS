@@ -302,7 +302,7 @@ void pubCameraPose(const Estimator &estimator, const std_msgs::Header &header)
        
        //**
        geometry_msgs::PoseStamped new_pose;     
-       new_pose.header.stamp =  odometry.header.stamp;
+       new_pose.header =  odometry.header;
        new_pose.pose =  odometry.pose.pose;
        pub_arducam_pose.publish(new_pose);
        //**
